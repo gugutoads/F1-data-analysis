@@ -124,6 +124,52 @@ def plot_degradation_impact(df, compounds=None):
     ax.grid(True)
     return fig
 
+def plot_cumulative_degradation(df, compounds=None):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    compound_colors = {'SOFT': '#e10600', 'MEDIUM': '#ffcc00', 'HARD': '#ffffff', 'WET': '#0000ff', 'INTERMEDIATE': '#00ff00'}
+    selected_compounds = compounds if compounds else ['SOFT', 'MEDIUM', 'HARD']
+
+    # Menor para permitir visualização em corridas individuais
+    MIN_OBS = 3
+
+    for compound in selected_compounds:
+        color = compound_colors.get(compound, '#d1d1d1')
+        temp = df[df['Compound'] == compound].copy()
+        if temp.empty: continue
+
+        # Remove outliers de vida útil por composto (ex: Softs que duram 40 voltas)
+        # Usamos o percentil 95 para cortar os valores absurdos de cada composto individualmente
+        tyre_max = temp['TyreLife'].quantile(0.95)
+        temp = temp[temp['TyreLife'] <= tyre_max]
+
+        counts = temp.groupby('TyreLife').size().reset_index(name='Count')
+        valid_tyrelife = counts[counts['Count'] >= MIN_OBS]['TyreLife']
+
+        # Usamos MEDIANA em vez de média para ser mais robusto contra distorções
+        plot_data = (
+            temp[temp['TyreLife'].isin(valid_tyrelife)]
+            .groupby('TyreLife')['Cumulative_Degradation']
+            .median()
+            .reset_index()
+        )
+
+        if plot_data.empty: continue
+
+        ax.plot(
+            plot_data['TyreLife'],
+            plot_data['Cumulative_Degradation'],
+            linewidth=2,
+            label=compound,
+            color=color
+        )
+
+    ax.set_xlabel("TyreLife (voltas)")
+    ax.set_ylabel("Median Cumulative Degradation")
+    ax.set_title("Cumulative Degradation ao longo da vida do pneu")
+    ax.grid(True)
+    ax.legend(title="Compound")
+    return fig
+
 def plot_avg_laptime_compound(df, race=None, year=None, compounds=None):
     if race == "Geral":
         df_filtered = df[df['Year'] == year] if year and year != "Todos" else df
@@ -591,6 +637,11 @@ def run_streamlit():
         st.caption("Mostra como a degradação acumulada afeta o ritmo do piloto em relação à média.")
         comp_deg = st.multiselect("Filtrar Compostos (Degradação)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_deg")
         plot_centered(plot_degradation_impact(df_filtered, comp_deg))
+
+        st.subheader("Degradação Acumulada por Vida Útil")
+        st.caption("Analisa a evolução da degradação média do pneu conforme o número de voltas aumenta.")
+        comp_cum = st.multiselect("Filtrar Compostos (Degradação Acumulada)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_cum")
+        plot_centered(plot_cumulative_degradation(df_filtered, comp_cum))
 
         st.subheader("Tempo Médio por Composto")
         st.caption("Compara a distribuição de tempos de volta entre diferentes compostos de pneus.")
