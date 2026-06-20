@@ -92,7 +92,7 @@ def plot_tire_usage(df, compounds=None):
         x = [i.mid for i in media.index]
         ax.plot(x, media.values, marker='o', label=composto, color=color, linewidth=2)
     ax.set_xlabel('Tyre Usage Percent')
-    ax.set_ylabel('LapTime_Delta Médio')
+    ax.set_ylabel('Average LapTime Delta')
     ax.legend()
     ax.grid(True)
     return fig
@@ -102,8 +102,8 @@ def plot_position_change(df):
     if media_original.empty: return None
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(media_original['Position_Change'], media_original['LapTime_Delta'], marker='o', alpha=0.8, color='#e10600')
-    ax.set_xlabel('Position_Change')
-    ax.set_ylabel('LapTime_Delta Médio')
+    ax.set_xlabel('Position Change')
+    ax.set_ylabel('Average LapTime Delta')
     ax.grid(True)
     return fig
 
@@ -119,8 +119,8 @@ def plot_degradation_impact(df, compounds=None):
         ax.plot(media.values, marker='o', linewidth=2, alpha=0.8, label=composto, color=color)
     ax.axhline(y=0, linestyle='--', color='white', alpha=0.7)
     ax.set_xlabel('Cumulative Degradation')
-    ax.set_ylabel('Lap_vs_Driver_Avg Médio')
-    ax.legend(title='Composto')
+    ax.set_ylabel('Average Lap vs Driver Avg')
+    ax.legend(title='Compound')
     ax.grid(True)
     return fig
 
@@ -163,16 +163,16 @@ def plot_cumulative_degradation(df, compounds=None):
             color=color
         )
 
-    ax.set_xlabel("TyreLife (voltas)")
+    ax.set_xlabel("TyreLife (laps)")
     ax.set_ylabel("Median Cumulative Degradation")
-    ax.set_title("Cumulative Degradation ao longo da vida do pneu")
+    ax.set_title("Cumulative Degradation over Tire Life")
     ax.grid(True)
     ax.legend(title="Compound")
     return fig
 
 def plot_avg_laptime_compound(df, race=None, year=None, compounds=None):
-    if race == "Geral":
-        df_filtered = df[df['Year'] == year] if year and year != "Todos" else df
+    if race == "Overall":
+        df_filtered = df[df['Year'] == year] if year and year != "All" else df
     elif race and year:
         df_filtered = df[(df['Race'] == race) & (df['Year'] == year)]
     else:
@@ -203,7 +203,7 @@ def plot_avg_laptime_compound(df, race=None, year=None, compounds=None):
                    fontsize=10, fontweight='bold', color='white',
                    bbox=dict(facecolor='#e10600', alpha=0.6, edgecolor='none', pad=1))
 
-    title = f'Tempo Médio por Composto - {race} ({year})' if race else 'Tempo Médio por Composto'
+    title = f'Average Lap Time by Compound - {race} ({year})' if race else 'Average Lap Time by Compound'
     ax.set_title(title)
     plt.suptitle('')
     ax.set_ylabel('LapTime (s)')
@@ -257,8 +257,8 @@ def plot_efficiency_year(df):
         ax.annotate(piloto, (resultado.loc[piloto, 'TyreLife_Relative'], resultado.loc[piloto, 'Tyre_Efficiency']), fontsize=8, color='white')
     ax.axvline(0, linestyle='--', color='gray')
     ax.axhline(0, linestyle='--', color='gray')
-    ax.set_xlabel('TyreLife_Relative Médio')
-    ax.set_ylabel('Tyre_Efficiency Médio')
+    ax.set_xlabel('Average TyreLife Relative')
+    ax.set_ylabel('Average Tyre Efficiency')
     ax.legend()
     return fig
 
@@ -290,8 +290,8 @@ def plot_conservation_gain_year(df):
     for piloto in resultado.index:
         ax.annotate(piloto, (resultado.loc[piloto, 'TyreLife_Relative'], resultado.loc[piloto, 'Avg_Total_Position_Gain']), fontsize=8, color='white')
     ax.axvline(0, color='white', linestyle='--')
-    ax.set_xlabel('TyreLife_Relative Médio')
-    ax.set_ylabel('Ganho de Posições Médio')
+    ax.set_xlabel('Average TyreLife Relative')
+    ax.set_ylabel('Average Position Gain')
     ax.legend()
     return fig
 
@@ -317,8 +317,8 @@ def plot_pace_result_year(df):
     for piloto in resultado.index:
         ax.annotate(piloto, (resultado.loc[piloto, 'Lap_vs_Race_Avg'], resultado.loc[piloto, 'Avg_Final_Position']), fontsize=8, color='white')
     ax.invert_yaxis()
-    ax.set_xlabel('Lap_vs_Race_Avg')
-    ax.set_ylabel('Posição Final Média')
+    ax.set_xlabel('Lap vs Race Avg')
+    ax.set_ylabel('Average Final Position')
     ax.legend()
     return fig
 
@@ -334,13 +334,13 @@ def plot_podiums_perf_year(df):
 
     fig, ax1 = plt.subplots(figsize=(12, 5))
     res_pod['Qtd_Podios'].plot(kind='bar', ax=ax1, alpha=0.7, color='#444444')
-    ax1.set_ylabel('Quantidade de Pódios')
+    ax1.set_ylabel('Number of Podiums')
     for i, valor in enumerate(res_pod['Qtd_Podios']):
         ax1.text(i, valor + 0.1, str(int(valor)), ha='center', fontsize=10, fontweight='bold', color='white',
                  bbox=dict(facecolor='#444444', alpha=0.7, edgecolor='none', pad=1))
 
     ax2 = ax1.twinx()
-    ax2.plot(range(len(res_pod)), res_pod['Pos_Ganhas'], marker='o', color='#e10600', label='Posições Ganhas', linewidth=3)
+    ax2.plot(range(len(res_pod)), res_pod['Pos_Ganhas'], marker='o', color='#e10600', label='Positions Gained', linewidth=3)
     ax2.plot(range(len(res_pod)), res_pod['Lap_vs_Race_Avg'], marker='s', color='#ffffff', label='Lap vs Race Avg', linewidth=3)
     ax2.axhline(0, color='white', linestyle='--', alpha=0.5)
     ax2.set_ylabel('Performance')
@@ -377,7 +377,7 @@ def get_best_overcomer(df):
     return best_driver, best_score
 
 def plot_consistency_year(df, ano=None):
-    if ano and ano != "Todos":
+    if ano and ano != "All":
         df_ano = df[df['Year'] == ano]
     else:
         df_ano = df
@@ -410,8 +410,8 @@ def plot_consistency_year(df, ano=None):
     for piloto in res.index:
         ax.annotate(piloto, (res.loc[piloto, 'Std_Lap_vs_Race_Avg'], res.loc[piloto, 'Avg_Final_Position']), fontsize=8, color='white')
     ax.invert_yaxis()
-    ax.set_xlabel('Desvio padrão da consistência')
-    ax.set_ylabel('Posição Final Média')
+    ax.set_xlabel('Consistency Standard Deviation')
+    ax.set_ylabel('Average Final Position')
     ax.legend()
     return fig
 
@@ -424,7 +424,7 @@ def plot_pace_evolution(df):
     ax.plot(x, media.values, marker='o', linewidth=3, color='#e10600')
     ax.axhline(y=0, linestyle='--', color='white', alpha=0.5)
     ax.set_xlabel('Race Progress (%)')
-    ax.set_ylabel('Lap_vs_Race_Avg Médio (s)')
+    ax.set_ylabel('Average Lap vs Race Avg (s)')
     return fig
 
 def plot_pit_comparison(df):
@@ -436,8 +436,8 @@ def plot_pit_comparison(df):
 
     valores = [antes_pit.mean(), pit.mean(), depois_pit.mean()]
     fig, ax = plt.subplots(figsize=(8, 4))
-    ax.bar(['Antes do Pit', 'No Pit', 'Após o Pit'], valores, color=['#444444', '#e10600', '#d1d1d1'])
-    ax.set_ylabel('Tempo Médio (s)')
+    ax.bar(['Before Pit', 'In Pit', 'After Pit'], valores, color=['#444444', '#e10600', '#d1d1d1'])
+    ax.set_ylabel('Average Lap Time (s)')
     for i, v in enumerate(valores):
         ax.text(i, v + 0.05, f'{v:.2f}', ha='center', fontweight='bold', color='white')
     return fig
@@ -525,10 +525,10 @@ def inject_custom_css():
 def render_kpi_cards(df):
     # Calculate metrics
     metrics = {
-        "Pilotos": df['Driver'].nunique(),
-        "Corridas": df['Race'].nunique(),
-        "Compostos": df['Compound'].nunique(),
-        "Média LapTime": f"{df['LapTime (s)'].mean():.2f}s"
+        "Drivers": df['Driver'].nunique(),
+        "Races": df['Race'].nunique(),
+        "Compounds": df['Compound'].nunique(),
+        "Avg LapTime": f"{df['LapTime (s)'].mean():.2f}s"
     }
 
     cols = st.columns(len(metrics))
@@ -542,23 +542,23 @@ def render_kpi_cards(df):
             """, unsafe_allow_html=True)
 
 def render_details_menu(df):
-    with st.expander("🔍 Ver Nomes dos Filtros (Pilotos, Corridas e Compostos)"):
+    with st.expander("🔍 View Filter Names (Drivers, Races and Compounds)"):
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.markdown("**🏎️ Pilotos**")
+            st.markdown("**🏎️ Drivers**")
             pilotos = sorted(df['Driver'].unique().tolist())
-            st.write(f"- {', '.join(pilotos)}" if pilotos else "Nenhum piloto encontrado")
+            st.write(f"- {', '.join(pilotos)}" if pilotos else "No drivers found")
 
         with col2:
-            st.markdown("**🏁 Corridas**")
+            st.markdown("**🏁 Races**")
             corridas = sorted(df['Race'].unique().tolist())
-            st.write(f"- {', '.join(corridas)}" if corridas else "Nenhuma corrida encontrada")
+            st.write(f"- {', '.join(corridas)}" if corridas else "No races found")
 
         with col3:
-            st.markdown("**🛞 Compostos**")
+            st.markdown("**🛞 Compounds**")
             compostos = sorted(df['Compound'].unique().tolist())
-            st.write(f"- {', '.join(compostos)}" if compostos else "Nenhum composto encontrado")
+            st.write(f"- {', '.join(compostos)}" if compostos else "No compounds found")
 
 def run_streamlit():
     st.set_page_config(page_title="F1 Performance Dashboard", layout="wide")
@@ -572,10 +572,10 @@ def run_streamlit():
 
     # Header
     st.title("F1 Performance Dashboard")
-    st.markdown("Visualização de telemetria, desgaste de pneus e performance de pilotos.")
+    st.markdown("Telemetry visualization, tire degradation and driver performance analysis.")
 
     # Sidebar Filters
-    st.sidebar.header("⚙️ Filtros Globais")
+    st.sidebar.header("⚙️ Global Filters")
 
     @st.cache_data
     def get_data():
@@ -584,25 +584,25 @@ def run_streamlit():
     df_all = get_data()
 
     # Year Filter
-    anos_opcoes = ["Todos"] + sorted(df_all['Year'].unique().tolist())
-    ano_sel = st.sidebar.selectbox("Selecione o Ano", anos_opcoes, index=len(anos_opcoes)-1)
+    anos_opcoes = ["All"] + sorted(df_all['Year'].unique().tolist())
+    ano_sel = st.sidebar.selectbox("Select Year", anos_opcoes, index=len(anos_opcoes)-1)
 
     # Race Filter (Dynamic)
-    if ano_sel == "Todos":
+    if ano_sel == "All":
         corridas_disponiveis = sorted(df_all['Race'].unique().tolist())
     else:
         corridas_disponiveis = sorted(df_all[df_all['Year'] == ano_sel]['Race'].unique().tolist())
-    corridas_opcoes = ["Geral"] + corridas_disponiveis
-    corrida_sel = st.sidebar.selectbox("Selecione a Corrida", corridas_opcoes)
+    corridas_opcoes = ["Overall"] + corridas_disponiveis
+    corrida_sel = st.sidebar.selectbox("Select Race", corridas_opcoes)
 
     # Global Filtering Logic
-    if ano_sel == "Todos":
-        if corrida_sel == "Geral":
+    if ano_sel == "All":
+        if corrida_sel == "Overall":
             df_filtered = df_all.copy()
         else:
             df_filtered = df_all[df_all['Race'] == corrida_sel]
     else:
-        if corrida_sel == "Geral":
+        if corrida_sel == "Overall":
             df_filtered = df_all[df_all['Year'] == ano_sel]
         else:
             df_filtered = df_all[(df_all['Year'] == ano_sel) & (df_all['Race'] == corrida_sel)]
@@ -619,95 +619,95 @@ def run_streamlit():
         with col2:
             st.pyplot(fig)
 
-    tabs = st.tabs(["Pneus & Desgaste", "Performance & Ritmo", "Estratégia & Pódios"])
+    tabs = st.tabs(["Tires & Degradation", "Performance & Pace", "Strategy & Podiums"])
 
     with tabs[0]:
-        st.header("Análise de Pneus")
+        st.header("Tire Analysis")
 
-        with st.expander("Visualizar Dados Filtrados"):
+        with st.expander("View Filtered Data"):
             st.dataframe(df_filtered[['Compound', 'TyreLife', 'LapTime (s)', 'Cumulative_Degradation', 'Tyre_Usage_Percent']], use_container_width=True)
 
         # Filtro individual para cada gráfico que usa compostos
-        st.subheader("Perda de Desempenho por Desgaste")
-        st.caption("Analisa a variação do tempo de volta conforme a porcentagem de uso do pneu aumenta.")
-        comp_usage = st.multiselect("Filtrar Compostos (Desempenho)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_usage")
+        st.subheader("Performance Loss by Wear")
+        st.caption("Analyzes lap time variation as tire usage percentage increases.")
+        comp_usage = st.multiselect("Filter Compounds (Performance)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_usage")
         plot_centered(plot_tire_usage(df_filtered, comp_usage))
 
-        st.subheader("Impacto da Degradação Acumulada")
-        st.caption("Mostra como a degradação acumulada afeta o ritmo do piloto em relação à média.")
-        comp_deg = st.multiselect("Filtrar Compostos (Degradação)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_deg")
+        st.subheader("Cumulative Degradation Impact")
+        st.caption("Shows how cumulative degradation affects driver pace relative to the average.")
+        comp_deg = st.multiselect("Filter Compounds (Degradation)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_deg")
         plot_centered(plot_degradation_impact(df_filtered, comp_deg))
 
-        st.subheader("Degradação Acumulada por Vida Útil")
-        st.caption("Analisa a evolução da degradação média do pneu conforme o número de voltas aumenta.")
-        comp_cum = st.multiselect("Filtrar Compostos (Degradação Acumulada)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_cum")
+        st.subheader("Cumulative Degradation by Tire Life")
+        st.caption("Analyzes the evolution of average tire degradation as lap count increases.")
+        comp_cum = st.multiselect("Filter Compounds (Cumulative Degradation)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_cum")
         plot_centered(plot_cumulative_degradation(df_filtered, comp_cum))
 
-        st.subheader("Tempo Médio por Composto")
-        st.caption("Compara a distribuição de tempos de volta entre diferentes compostos de pneus.")
-        comp_avg = st.multiselect("Filtrar Compostos (Tempo Médio)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_avg")
+        st.subheader("Average Lap Time by Compound")
+        st.caption("Compares lap time distribution across different tire compounds.")
+        comp_avg = st.multiselect("Filter Compounds (Average Time)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_avg")
         plot_centered(plot_avg_laptime_compound(df_filtered, corrida_sel, ano_sel, comp_avg))
 
-        st.subheader("TyreLife por PitNextLap e Composto")
-        st.caption("Analisa a vida útil do pneu no momento em que o piloto decide entrar no pit stop.")
+        st.subheader("TyreLife by PitNextLap and Compound")
+        st.caption("Analyzes tire life at the moment the driver decides to enter the pit stop.")
         plot_centered(plot_tyrelife_pit(df_filtered))
 
     with tabs[1]:
-        st.header("Performance & Ritmo")
-        with st.expander("Visualizar Dados Filtrados"):
+        st.header("Performance & Pace")
+        with st.expander("View Filtered Data"):
             st.dataframe(df_filtered[['Driver', 'Year', 'Lap_vs_Driver_Avg', 'Lap_vs_Race_Avg', 'TyreLife_Relative', 'Tyre_Efficiency']], use_container_width=True)
 
-        st.subheader("Evolução Média do Ritmo")
-        st.caption("Acompanha a variação do ritmo médio de todos os pilotos ao longo da corrida.")
-        plot_centered(plot_pace_evolution(df_filtered))    
+        st.subheader("Average Pace Evolution")
+        st.caption("Tracks the variation of average pace for all drivers throughout the race.")
+        plot_centered(plot_pace_evolution(df_filtered))
 
         st.subheader("TyreLife vs Tyre Efficiency")
-        st.caption("Avalia a relação entre a conservação de pneus e a eficiência dos pneus de cada piloto.")
+        st.caption("Evaluates the relationship between tire conservation and each driver's tire efficiency.")
         fig_eff = plot_efficiency_year(df_filtered)
         if fig_eff: plot_centered(fig_eff)
 
-        st.subheader("Consistência vs Resultado Final")
-        st.caption("Mede a correlação entre a estabilidade do ritmo e a posição final média.")
+        st.subheader("Consistency vs Final Result")
+        st.caption("Measures the correlation between pace stability and average final position.")
         fig_cons = plot_consistency_year(df_filtered, ano_sel)
         if fig_cons: plot_centered(fig_cons)
 
         
 
     with tabs[2]:
-        st.header("Estratégia e Resultados")
-        with st.expander("Visualizar Dados Filtrados"):
+        st.header("Strategy & Results")
+        with st.expander("View Filtered Data"):
             st.dataframe(df_filtered[['Driver', 'Year', 'Position', 'Position_Change', 'Total_Position_Gain', 'PitStop', 'PitNextLap']], use_container_width=True)
 
-        st.subheader("Tempo Antes vs Depois do Pit")
-        st.caption("Compara os tempos de volta imediatamente antes, durante e após um pit stop.")
+        st.subheader("Time Before vs After Pit")
+        st.caption("Compares lap times immediately before, during and after a pit stop.")
         plot_centered(plot_pit_comparison(df_filtered))
 
-        st.subheader("Conservação de Pneus vs Ganho de Posições")
-        st.caption("Mede a correlação entre a capacidade de conservar pneus e o ganho de posições.")
+        st.subheader("Tire Conservation vs Position Gain")
+        st.caption("Measures the correlation between tire conservation ability and position gain.")
         fig_gain = plot_conservation_gain_year(df_filtered)
         if fig_gain: plot_centered(fig_gain)
 
-        st.subheader("Ritmo Relativo vs Resultado Final")
-        st.caption("Compara o ritmo médio do piloto com a posição final média obtida.")
+        st.subheader("Relative Pace vs Final Result")
+        st.caption("Compares driver average pace with average final position achieved.")
         fig_res = plot_pace_result_year(df_filtered)
         if fig_res: plot_centered(fig_res)
 
-        st.subheader("Pódios vs Performance vs Ritmo")
-        st.caption("Cruza a quantidade de pódios com o ganho de posições e a performance de ritmo.")
+        st.subheader("Podiums vs Performance vs Pace")
+        st.caption("Cross-references podium count with position gain and pace performance.")
         fig_pod = plot_podiums_perf_year(df_filtered)
         if fig_pod:
             plot_centered(fig_pod)
             # Botão para calcular o piloto que mais se supera
-            if st.button("🏆 Quem mais se superou?"):
+            if st.button("🏆 Who Overcame the Most?"):
                 driver, score = get_best_overcomer(df_filtered)
                 if driver:
-                    st.success(f"**O piloto que mais se superou foi {driver}!** \n\nPontuação de Superação: `{score:.2f}`")
+                    st.success(f"**The driver who overcame the most was {driver}!** \n\nOvercoming Score: `{score:.2f}`")
                 else:
-                    st.warning("Não há dados de pódios suficientes para calcular a superação.")
-            st.caption("Cálculo: Qtd de Pódios × (1 + Média de Posições Ganhas). Valoriza quem chega ao pódio recuperando posições.")
+                    st.warning("Not enough podium data to calculate overcoming.")
+            st.caption("Calculation: Podiums × (1 + Avg Positions Gained). Values drivers who reach the podium by recovering positions.")
 
         
 
-# Lançar a interface do Streamlit
-if st.button("Carregar Interface") or True: # O 'or True' garante que rode ao iniciar
+# Launch Streamlit Interface
+if st.button("Load Interface") or True: # The 'or True' ensures it runs on startup
     run_streamlit()
