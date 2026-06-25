@@ -628,7 +628,7 @@ def run_streamlit():
             st.dataframe(df_filtered[['Compound', 'TyreLife', 'LapTime (s)', 'Cumulative_Degradation', 'Tyre_Usage_Percent']], use_container_width=True)
 
         # Filtro individual para cada gráfico que usa compostos
-        st.subheader("Performance Loss by Wear")
+        st.subheader("Performance Loss by Tyre use")
         st.caption("Analyzes lap time variation as tire usage percentage increases.")
         comp_usage = st.multiselect("Filter Compounds (Performance)", sorted(df_filtered['Compound'].unique().tolist()), default=sorted(df_filtered['Compound'].unique().tolist()), key="f_usage")
         plot_centered(plot_tire_usage(df_filtered, comp_usage))
@@ -661,7 +661,7 @@ def run_streamlit():
         st.caption("Tracks the variation of average pace for all drivers throughout the race.")
         plot_centered(plot_pace_evolution(df_filtered))
 
-        st.subheader("TyreLife vs Tyre Efficiency")
+        st.subheader("TyreLife Relative vs Tyre Efficiency")
         st.caption("Evaluates the relationship between tire conservation and each driver's tire efficiency.")
         fig_eff = plot_efficiency_year(df_filtered)
         if fig_eff: plot_centered(fig_eff)
